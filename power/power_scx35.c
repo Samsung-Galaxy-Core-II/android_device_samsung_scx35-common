@@ -256,7 +256,7 @@ static void find_input_nodes(struct touch_path *touch) {
 	char file_content[20];
 	char *path = NULL;
 	char *node_path = NULL;
-	char dir[1024];
+	char dir[32];
 	size_t pathsize;
 	size_t node_pathsize;
 	DIR *d;
@@ -265,11 +265,20 @@ static void find_input_nodes(struct touch_path *touch) {
 	for (i = 0; i < 20; i++) {
 		snprintf(dir, sizeof(dir), "/sys/class/input/input%d", i);
 		d = opendir(dir);
-		if (d == NULL) {
+		if (d == NULL)
 			return;
-		}
 
 		while ((de = readdir(d)) != NULL) {
+			/*
+			 * I don't think it would be possible to get
+			 * a null d_name or a null-byte at d_name[0]
+			 *
+			 * Skip all hidden files and directories, and
+			 * current and parent directory.
+			 */
+			if (de->d_name[0] == '.')
+				continue;
+
 			if (strncmp(filename, de->d_name, sizeof(filename)) == 0) {
 				pathsize = strlen(dir) + strlen(de->d_name) + 2;
 				node_pathsize = strlen(dir) + strlen("enabled") + 2;
@@ -277,6 +286,10 @@ static void find_input_nodes(struct touch_path *touch) {
 				path = malloc(pathsize);
 				node_path = malloc(node_pathsize);
 				if (path == NULL || node_path == NULL) {
+					if (path)
+						free(path);
+					if(node_path)
+						free(node_path);
 					strerror_r(errno, errno_str, sizeof(errno_str));
 					ALOGE("Out of memory: %s\n", errno_str);
 					return;
@@ -284,39 +297,22 @@ static void find_input_nodes(struct touch_path *touch) {
 
 				snprintf(path, pathsize, "%s/%s", dir, filename);
 				sysfs_read(path, file_content, sizeof(file_content));
+				// path will be left unused onwards so free it
+				free(path);
+
 				snprintf(node_path, node_pathsize, "%s/%s", dir, "enabled");
 
 				if (strncmp(file_content, "sec_touchkey", 12) == 0) {
 					ALOGV("%s: found touchkey path: %s\n", __func__, node_path);
-					touch->touchkey_power_path = malloc(node_pathsize);
-					if (touch->touchkey_power_path == NULL) {
-						strerror_r(errno, errno_str, sizeof(errno_str));
-						ALOGE("Out of memory: %s\n", errno_str);
-						return;
-					}
-					snprintf(touch->touchkey_power_path, node_pathsize,
-									"%s", node_path);
-				}
-
-				if (strncmp(file_content, "sec_touchscreen", 15) == 0) {
+					touch->touchkey_power_path = node_path;
+				} else if (strncmp(file_content, "sec_touchscreen", 15) == 0) {
 					ALOGV("%s: found touchscreen path: %s\n", __func__, node_path);
-					touch->touchscreen_power_path = malloc(node_pathsize);
-					if (touch->touchscreen_power_path == NULL) {
-						strerror_r(errno, errno_str, sizeof(errno_str));
-						ALOGE("Out of memory: %s\n", errno_str);
-						return;
-					}
-					snprintf(touch->touchscreen_power_path, node_pathsize,
-									"%s", node_path);
+					touch->touchscreen_power_path = node_path;
 				}
 			}
 		}
+		closedir(d);
 	}
-	if (path)
-		free(path);
-	if (node_path)
-		free(node_path);
-	closedir(d);
 }
 
 /**********************************************************
@@ -356,7 +352,7 @@ void power_init() {
  */
 void power_set_interactive(int on) {
 
-	struct touch_path *touch = (struct touch_path *)malloc(sizeof(struct touch_path));
+	struct touch_path *touch = (struct touch_path *)calloc(1, sizeof(struct touch_path));
 	struct stat sb;
 	char touchkey_node[2];
 	int rc;
@@ -371,9 +367,14 @@ void power_set_interactive(int on) {
 		goto out;
 		}
 	}
+	if (!touch) {
+		ALOGE("%s: failed to allocate memory", __func__);
+		goto out;
+	}
 	find_input_nodes(touch);
 
-	sysfs_write(touch->touchscreen_power_path, on ? "1" : "0");
+	if (touch->touchscreen_power_path)
+		sysfs_write(touch->touchscreen_power_path, on ? "1" : "0");
 
 	rc = stat(touch->touchkey_power_path, &sb);
 	if (rc < 0) {
@@ -402,6 +403,13 @@ void power_set_interactive(int on) {
 	}
 
 out:
+	if (touch) {
+		if (touch->touchkey_power_path)
+			free(touch->touchkey_power_path);
+		if (touch->touchscreen_power_path)
+			free(touch->touchscreen_power_path);
+		free(touch);
+	}
 	cpu_interactive_write(IO_IS_BUSY_PATH, on ? "1" : "0");
 	ALOGV("power_set_interactive: %d done\n", on);
 }
