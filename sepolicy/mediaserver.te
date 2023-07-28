@@ -1,5 +1,6 @@
 set_prop(mediaserver, media_prop)
 allow mediaserver audio_device:chr_file { read write ioctl open };
+allow mediaserver camera_device:chr_file { read write ioctl open };
 allow mediaserver media_device:dir search;
 allow mediaserver media_device:fifo_file { read write open };
 allow mediaserver proc_pin_switch:dir search;

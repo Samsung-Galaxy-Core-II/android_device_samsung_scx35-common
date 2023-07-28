@@ -1,5 +1,12 @@
-allow rild servicemanager:dir search;
-allow rild servicemanager:file { read open };
-allow rild system_app:dir search;
-allow rild system_app:file { read open };
-allow rild prod_file:dir search;
+type modemd, domain;
+
+init_daemon_domain(modemd);
+
+allow modemd init:unix_stream_socket connectto;
+allow modemd proc_cpw:dir search;
+allow modemd proc_cpw:file { open read };
+allow modemd property_socket:sock_file write;
+allow modemd spipe_device:chr_file { open read write };
+allow modemd tty_device:chr_file { open read write };
+allow modemd rild:unix_stream_socket connectto;
+allow modemd phoneserver:unix_stream_socket connectto;

@@ -1,0 +1,7 @@
+type nvitemd, domain;
+
+init_daemon_domain(nvitemd)
+
+allow nvitemd radio_block_device:blk_file { open read write };
+allow nvitemd spipe_device:chr_file { open read write };
+allow nvitemd block_device:dir search;

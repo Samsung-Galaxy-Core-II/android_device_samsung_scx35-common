@@ -1,0 +1,12 @@
+type phoneserver, domain;
+
+init_daemon_domain(phoneserver)
+
+allow phoneserver device:dir { add_name write };
+allow phoneserver device:lnk_file create;
+allow phoneserver devpts:chr_file { ioctl open read setattr write };
+allow phoneserver init:unix_stream_socket connectto;
+allow phoneserver property_socket:sock_file write;
+allow phoneserver radio_device:chr_file { open read write };
+allow phoneserver self:capability setuid;
+allow phoneserver tty_device:chr_file { open read write };

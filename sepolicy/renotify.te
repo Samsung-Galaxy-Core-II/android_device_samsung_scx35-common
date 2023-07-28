@@ -1,0 +1,7 @@
+type refnotify, domain;
+
+init_daemon_domain(refnotify)
+
+allow refnotify refnotify_device:chr_file { open read write };
+allow refnotify rtc_device:chr_file { ioctl open read write };
+allow refnotify sysfs_wait_for_fb:file { open read };

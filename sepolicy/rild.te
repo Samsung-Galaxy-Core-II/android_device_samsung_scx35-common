@@ -3,7 +3,7 @@ set_prop(rild, ctl_engpc_prop);
 set_prop(rild, system_prop);
 
 allow rild radio_block_device:blk_file { open read write };
-allow rild radio_data_file:dir { write remove_name add_name };
+allow rild radio_data_file:dir { write remove_name add_name search };
 allow rild radio_data_file:file { open read write getattr setattr create unlink };
 
 allow rild devpts:chr_file { open read write ioctl setattr getattr };
@@ -30,3 +30,9 @@ allow rild self:capability { fsetid fowner chown };
 
 allow rild unlabeled:file { read write open getattr setattr };
 allow rild unlabeled:dir search;
+
+allow rild servicemanager:dir search;
+allow rild servicemanager:file { read open };
+allow rild system_app:dir search;
+allow rild system_app:file { read open };
+allow rild prod_file:dir search;
