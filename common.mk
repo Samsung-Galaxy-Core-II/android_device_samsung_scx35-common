@@ -1,16 +1,8 @@
-# Copyright (C) 2017 The Lineage Project
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# Copyright (C) 2017-2023 The LineageOS Project
 #
-#      http://www.apache.org/licenses/LICENSE-2.0
+# SPDX-License-Identifier: Apache-2.0
 #
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 
 LOCAL_PATH := device/samsung/scx35-common
 
@@ -29,6 +21,7 @@ PRODUCT_PACKAGES += \
 	audio_para \
 	audio_effects_vendor.conf \
 	audio_policy.conf \
+    audio_vbc_eq \
 	codec_pga.xml \
 	tiny_hw.xml \
 	audio.primary.sc8830 \
@@ -37,8 +30,16 @@ PRODUCT_PACKAGES += \
 # Bluetooth
 PRODUCT_PACKAGES += \
 	libbluetooth_jni \
-	bluetooth.default \
-	libbt-vendor
+	libbt-vendor \
+	bluetooth.default
+
+# Browser
+PRODUCT_PACKAGES += \
+	Jelly
+
+# Camera
+PRODUCT_PACKAGES += \
+	Snap
 
 # Codecs
 PRODUCT_PACKAGES += \
@@ -58,15 +59,10 @@ PRODUCT_COPY_FILES += \
 
 # Media config
 PRODUCT_PACKAGES += \
-	media_codecs.xml
-
-MEDIA_XML_CONFIGS := \
-	frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml \
-	frameworks/av/media/libstagefright/data/media_codecs_google_video_le.xml \
-	frameworks/av/media/libstagefright/data/media_codecs_google_telephony.xml
-
-PRODUCT_COPY_FILES += \
-	$(foreach f,$(MEDIA_XML_CONFIGS),$(f):$(TARGET_COPY_OUT_VENDOR)/etc/$(notdir $(f)))
+	media_codecs.xml \
+	frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_audio.xml \
+	frameworks/av/media/libstagefright/data/media_codecs_google_telephony.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_telephony.xml \
+	frameworks/av/media/libstagefright/data/media_codecs_google_video.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_video.xml
 
 PRODUCT_COPY_FILES += \
 	$(LOCAL_PATH)/system/etc/init/android.hardware.media.omx@1.0-service.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/android.hardware.media.omx@1.0-service.rc \
@@ -90,10 +86,6 @@ PRODUCT_PACKAGES += \
 	modemd \
 	modem_control
 
-PRODUCT_PROPERTY_OVERRIDES += \
-	ro.radio.modemtype=w \
-	rild.libpath=/system/vendor/lib/libsecril-shim.so
-
 PRODUCT_COPY_FILES += \
 	$(LOCAL_PATH)/system/etc/init/rild.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/rild.rc
 
@@ -102,7 +94,8 @@ PRODUCT_PACKAGES += \
 	libgpspc \
 	libefuse \
 	gps.conf \
-	gps.xml
+	gps.xml \
+	gps.default
 
 # HWC
 PRODUCT_PACKAGES += \
@@ -139,22 +132,9 @@ PRODUCT_PACKAGES += \
 	init.sc8830.usb.rc \
 	ueventd.sc8830.rc
 
-# Packages
-PRODUCT_PACKAGES += \
-	Jelly
-
 # Lights
 PRODUCT_PACKAGES += \
 	lights.sc8830
-
-# Camera config
-PRODUCT_PROPERTY_OVERRIDES += \
-	camera.disable_zsl_mode=1
-
-# Languages
-PRODUCT_PROPERTY_OVERRIDES += \
-	ro.product.locale.language=en \
-	ro.product.locale.region=GB
 
 # Wifi
 PRODUCT_PACKAGES += \
@@ -171,29 +151,8 @@ PRODUCT_PACKAGES += \
 PRODUCT_PROPERTY_OVERRIDES += \
 	ro.com.android.mobiledata=false
 
-# Disable treble OMX
-PRODUCT_PROPERTY_OVERRIDES += \
-	persist.media.treble_omx=false
-
-# ART device props
-PRODUCT_PROPERTY_OVERRIDES += \
-	dalvik.vm.dex2oat-flags=--no-watch-dog \
-	dalvik.vm.image-dex2oat-filter=quicken \
-	dalvik.vm.dex2oat-filter=quicken \
-	pm.dexopt.first-boot=quicken \
-	pm.dexopt.boot=verify \
-	pm.dexopt.install=verify \
-	pm.dexopt.bg-dexopt=quicken \
-	pm.dexopt.ab-ota=quicken \
-	pm.dexopt.inactive=verify \
-	pm.dexopt.shared=quicken
-
 # HIDL (HAL Interface Definition Language)
 include $(LOCAL_PATH)/hidl.mk
-
-# Performance
-PRODUCT_PROPERTY_OVERRIDES += \
-	sys.use_fifo_ui=1
 
 # Permissions
 PERMISSIONS_XML_FILES := \
@@ -207,33 +166,9 @@ PERMISSIONS_XML_FILES := \
 
 PRODUCT_COPY_FILES += \
 	$(foreach f,$(PERMISSIONS_XML_FILES),$(f):$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/$(notdir $(f)))
-
-# enable Google-specific location features,
-# like NetworkLocationProvider and LocationCollector
-PRODUCT_PROPERTY_OVERRIDES += \
-	ro.com.google.locationfeatures=1 \
-	ro.com.google.networklocation=1
-
-# sdcardfs
-PRODUCT_PROPERTY_OVERRIDES += \
-	ro.sys.sdcardfs=false
-
+	
 # Dalvik heap config
 $(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
 
-# For userdebug builds
-PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
-	ro.secure=0 \
-	ro.adb.secure=0 \
-	ro.debuggable=1 \
-	persist.sys.root_access=1 \
-	persist.service.adb.enable=1
-
-PRODUCT_PROPERTY_OVERRIDES += \
-	persist.sys.usb.config=mtp,adb
-
-# Android Go
-PRODUCT_PROPERTY_OVERRIDES += \
-	ro.config.low_ram=false
-
+# Go Config
 $(call inherit-product, build/target/product/go_defaults_512.mk)
