@@ -78,14 +78,14 @@ TARGET_LD_SHIM_LIBS := \
 # Init
 TARGET_INIT_VENDOR_LIB := libinit_sec
 
-# Board specific features
-#TARGET_HAS_LEGACY_CAMERA_HAL1 := true
-
 # GPS
 TARGET_SPECIFIC_HEADER_PATH := device/samsung/scx35-common/include
 
 # healthd
 BOARD_HAL_STATIC_LIBRARIES := libhealthd.sc8830
+
+# Properties
+TARGET_SYSTEM_PROP += device/samsung/scx35-common/system.prop
 
 # Charger
 BOARD_CHARGER_ENABLE_SUSPEND := true

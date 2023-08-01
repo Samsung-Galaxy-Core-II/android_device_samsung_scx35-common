@@ -1,0 +1,40 @@
+#
+# system.prop
+#
+
+# Audio
+ro.config.media_vol_steps=25
+ro.config.vc_call_vol_steps=15
+
+# Camera
+camera.disable_zsl_mode=1
+
+# Display
+ro.opengles.version=196609
+ro.bq.gpu_to_cpu_unsupported=1
+ro.zygote.disable_gl_preload=true
+debug.hwui.use_buffer_age=false
+debug.hwui.render_dirty_regions=false
+debug.hwc.force_gpu=1
+persist.hwc.mdpcomp.enable=1
+
+# OMX
+persist.media.treble_omx=false
+
+# DRM
+drm.service.enabled=1
+
+# Strict Mode
+persist.sys.strictmode.disable=1
+
+# Avoid some buffer dequeue errors
+ro.sf.disable_triple_buffer=0
+
+# UI thread scheduling
+sys.use_fifo_ui=1
+
+# EGL blobs crash on screen off
+ro.egl.destroy_after_detach=true
+
+# SDcardFS
+ro.sys.sdcardfs=true
