@@ -22,7 +22,8 @@ TARGET_NO_BOOTLOADER := true
 BOARD_VENDOR := samsung
 
 # Bluetooth
-USE_BLUETOOTH_BCM4343 := true
+BOARD_HAVE_BLUETOOTH := true
+BOARD_HAVE_BLUETOOTH_BCM := true
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/samsung/scx35-common/bluetooth
 BOARD_CUSTOM_BT_CONFIG := device/samsung/scx35-common/bluetooth/libbt_vndcfg.txt
 

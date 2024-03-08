@@ -138,14 +138,17 @@ PRODUCT_PACKAGES += \
 
 # Wifi
 PRODUCT_PACKAGES += \
-	macloader \
-	libandroid_net \
-	libwpa_client \
 	wificond \
-	wifilogd \
-	wpa_supplicant.conf \
-	wpa_supplicant_overlay.conf \
-	p2p_supplicant_overlay.conf
+	libwpa_client \
+	hostapd \
+	dhcpcd.conf \
+	macloader \
+	wpa_supplicant \
+	wpa_supplicant.conf
+
+PRODUCT_COPY_FILES += \
+	$(LOCAL_PATH)/wifi/p2p_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/p2p_supplicant_overlay.conf \
+   	$(LOCAL_PATH)/wifi/wpa_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/wpa_supplicant_overlay.conf
 
 # Disable mobile data on first boot
 PRODUCT_PROPERTY_OVERRIDES += \
