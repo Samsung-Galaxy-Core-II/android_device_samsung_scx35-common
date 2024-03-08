@@ -168,6 +168,34 @@ on boot
     chmod 0440 /dev/iq_mem
     chmod 0660 /sys/class/graphics/fb0/blank
 
+# required so RIL can open kernel RPC drivers
+    chmod 0660 /dev/bcm_rpc
+    chmod 0660 /dev/bcm_irpc
+    chown radio radio /dev/bcm_rpc
+    chown radio radio /dev/bcm_irpc
+
+    setprop ro.build.product hawaii
+    setprop ro.product.device hawaii
+    setprop ro.radio.noril no
+
+    chmod 0660 /dev/bcm_atc
+    chown shell system /dev/bcm_atc
+    mkdir /data/atx
+    chown system system /data/atx
+    chmod 0771 /data/atx
+    chown system system /dev/bcm_log
+    chmod 0660 /dev/bcm_log
+    chown system system /dev/bcm_audio_log
+    chmod 0660 /dev/bcm_audio_log
+    chown system system /dev/ttyGS0
+    chmod 0770 /dev/snd/controlC0
+
+    chown system system /proc/bcm_fuse_net_config
+    chown system system /dev/block/mmcblk0
+    chmod 0660 /dev/block/mmcblk0
+    chown system system /dev/mem
+
+
 # SENSORS
 # Accelerometer_sensor
     chown system radio /sys/class/sensors/accelerometer_sensor/raw_data

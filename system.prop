@@ -10,7 +10,7 @@ ro.config.vc_call_vol_steps=15
 camera.disable_zsl_mode=1
 
 # Display
-ro.opengles.version=196609
+ro.opengles.version=131072
 ro.bq.gpu_to_cpu_unsupported=1
 ro.zygote.disable_gl_preload=true
 debug.hwui.use_buffer_age=false

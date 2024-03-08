@@ -84,4 +84,10 @@ PRODUCT_PACKAGES += \
 # WiFi
 PRODUCT_PACKAGES += \
 	android.hardware.wifi@1.0-service \
-	android.system.net.netd@1.0
+	android.hardware.wifi.supplicant@1.0
+	
+# Netutils
+PRODUCT_PACKAGES += \
+    	netutils-wrapper-1.0 \
+    	android.system.net.netd@1.0 \
+    	libandroid_net

@@ -67,11 +67,6 @@ __BEGIN_DECLS
  */
 #define GPS_HARDWARE_MODULE_ID "gps"
 
-/**
- * The GPS chipset can use Psc for AGPS
- */
-/* Samsung */
-#define AGPS_USE_PSC
 
 /** Milliseconds since January 1, 1970 */
 typedef int64_t GpsUtcTime;
@@ -392,7 +387,7 @@ typedef struct {
     float   elevation;
     /** Azimuth of SV in degrees. */
     float   azimuth;
-    /** SAMSUNG **/
+    /** Reserved */
     int used;
 } GpsSvInfo;
 
@@ -488,7 +483,6 @@ typedef struct {
      * might rely in the old (wrong) behavior.
      */
     uint16_t lac;
-    /* Samsung */
 #ifdef AGPS_USE_PSC
     uint16_t psc;
 #endif
