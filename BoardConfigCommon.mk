@@ -21,6 +21,10 @@ TARGET_BOARD_PLATFORM := sc8830
 TARGET_NO_BOOTLOADER := true
 BOARD_VENDOR := samsung
 
+# Audio
+BOARD_USES_TINYALSA_AUDIO := true
+TARGET_TINY_ALSA_IGNORE_SILENCE_SIZE := true
+
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_BCM := true
@@ -34,10 +38,12 @@ TARGET_EXFAT_DRIVER := exfat
 TARGET_DISABLE_ASHMEM_TRACKING := true
 
 # Graphics
+USE_OPENGL_RENDERER := true
 BOARD_EGL_NEEDS_HANDLE_VALUE := true
 USE_SPRD_DITHER := true
 USE_SPRD_HWCOMPOSER := true
 TARGET_FORCE_HWC_FOR_VIRTUAL_DISPLAYS := true
+NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
 
 # HIDL
 DEVICE_MANIFEST_FILE := device/samsung/scx35-common/configs/manifest.xml
@@ -47,6 +53,9 @@ BOARD_CANT_REALLOCATE_OMX_BUFFERS := true
 
 # seccomp
 #BOARD_SECCOMP_POLICY := device/samsung/scx35-common/seccomp # This flag is dead?
+
+# SPRD hardware
+BOARD_USES_SPRD_HARDWARE := true
 
 # Kernel
 BOARD_CUSTOM_BOOTIMG_MK := device/samsung/scx35-common/mkbootimg.mk
@@ -99,6 +108,7 @@ BACKLIGHT_PATH := /sys/class/backlight/panel/brightness
 WITH_DEXPREOPT := true
 WITH_DEXPREOPT_BOOT_IMG_AND_SYSTEM_SERVER_ONLY := true
 PRODUCT_DEX_PREOPT_BOOT_FLAGS += --compiler-filter=speed
+PRODUCT_SYSTEM_SERVER_COMPILER_FILTER := speed
 WITH_DEX_PREOPT_GENERATE_PROFILE := false
 
 # SELinux policy
